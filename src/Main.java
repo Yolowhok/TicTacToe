@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -6,7 +7,6 @@ import java.util.stream.Stream;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-//        Game.newGame();
-       Board.test();
+        Game.newGame();
     }
 }
