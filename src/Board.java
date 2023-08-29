@@ -1,12 +1,10 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /**
  * X = 1
  * O = -1
  * NULL = 0
- *
  * **/
 public class Board {
     private static final int COLUMN_SIZE = 3;
@@ -14,22 +12,17 @@ public class Board {
     private static final int VALUE_DECREASING = 1;
     private static final String CROSS_SYMBOL = "X⃣"; //"X";
     private static final String ZERO_SYMBOL = "O⃣"; //"O";
-    private static final String STRIKE_THROUGH_CROSS_SYMBOL = " X̶⃣";
-    private static final String STRIKE_THROUGH_ZERO_SYMBOL = " O̶⃣";
+    private static final String STRIKE_THROUGH_CROSS_SYMBOL = "X̶⃣";
+    private static final String STRIKE_THROUGH_ZERO_SYMBOL = "O̶⃣";
 
     private static final String EMPTY_SYMBOL = " ";
+    private static final String LIGHT_GREEN = "\033[0;92m";
+    private static final String WHITE = "\033[38;4;236m";
+    private static final String BACKGROUND_WHITE_COLOR = "\u001b[47;1m";
+    private static final String RESET_COLOR = "\u001b[0m";
+
     private static boolean roundIsOver = false;
     private static String[][] board;
-
-    public static void test() throws InterruptedException {
-        initialize();
-        renderBoard();
-        setValue(new int[]{1, 0}, CROSS_SYMBOL);
-        setValue(new int[]{2, 1}, CROSS_SYMBOL);
-        setValue(new int[]{2, 2}, CROSS_SYMBOL);
-        renderBoard();
-        checkBoardState();
-    }
     public static void initialize() {
         roundIsOver = false;
         board = new String[COLUMN_SIZE][ROW_SIZE];
@@ -39,29 +32,29 @@ public class Board {
             }
         }
     }
-    public static void text1() {
-        System.out.println(STRIKE_THROUGH_CROSS_SYMBOL + STRIKE_THROUGH_CROSS_SYMBOL + STRIKE_THROUGH_CROSS_SYMBOL);
-    }
     public static void checkBoardState() throws InterruptedException {
         ArrayList<Integer> sum = new ArrayList<>();
-        int [][] matrix = boardConverter();
+        if (!roundIsOver) {
+            int [][] matrix = boardConverter();
+            checkRowFieldsSum(matrix, sum);
+            checkColumnsFieldsSum(matrix, sum);
+            checkLeftDiagonalSum(matrix, sum);
+            checkRightDiagonalSum(matrix, sum);
+        }
 
-        checkRowFieldsSum(matrix, sum);
-        checkColumnsFieldsSum(matrix, sum);
-        checkLeftDiagonalSum(matrix, sum);
-        checkRightDiagonalSum(matrix, sum);
 
         if (sum.contains(3)) {
-            System.out.println("Крестики победили\n");
+            System.out.println("\nКрестики победили");
             roundIsOver = true;
             renderBoard(STRIKE_THROUGH_CROSS_SYMBOL, sum.indexOf(3));
-            System.out.println(sum.indexOf(3));
+            Board.renderBoard();
         } else if (sum.contains(-3)) {
-            System.out.println("Нолики победили\n");
-            renderBoard(STRIKE_THROUGH_ZERO_SYMBOL, sum.indexOf(-3));
+            System.out.println("\nНолики победили");
             roundIsOver = true;
+            renderBoard(STRIKE_THROUGH_ZERO_SYMBOL, sum.indexOf(-3));
+            Board.renderBoard();
         } else if (boardFieldsIsOver()){
-            System.out.println("Ничья\n");
+            System.out.println("\nНичья");
             roundIsOver = true;
         }
 
@@ -82,10 +75,16 @@ public class Board {
     }
     public static void renderBoard() throws InterruptedException {
         System.out.println();
+        System.out.println(" ͟͟͟|͟ ͟ ͟1͟ ͟ ͟2͟ ͟ ͟3͟");
         for (int row = 0; row < ROW_SIZE; row++) {
-            System.out.print("|");
+            System.out.print(row + 1 + "| ");
             for (int column = 0; column < COLUMN_SIZE; column++) {
-                System.out.print(board[row][column] + "|");
+                if (board[row][column].equals(EMPTY_SYMBOL)) {
+                    System.out.print(" " +"_"+" ");
+                } else {
+                    System.out.print(" " +board[row][column]+" ");
+                }
+                System.out.print("");
             }
             Thread.sleep(200);
             System.out.println();
@@ -130,9 +129,6 @@ public class Board {
     public static String getZeroSymbol() {
         return ZERO_SYMBOL;
     }
-    public static String getEmptySymbol() {
-        return EMPTY_SYMBOL;
-    }
     private static void checkRowFieldsSum(int [][] matrix, ArrayList<Integer> sum) {
         for (int row = 0; row < ROW_SIZE; row++) {
             int rowSum = 0;
@@ -161,29 +157,33 @@ public class Board {
     private static void checkRightDiagonalSum(int [][] matrix, ArrayList<Integer> sum) {
         int rightDiagonalSum = 0;
         for (int row = 0; row < ROW_SIZE; row++) {
-            rightDiagonalSum+= matrix[row][ROW_SIZE-row-1];
+            rightDiagonalSum+= matrix[row][ROW_SIZE-row-VALUE_DECREASING];
         }
         sum.add(rightDiagonalSum);
     }
     private static void lineEdit(String line, int index, String strikeThroughSymbol) {
         switch (line) {
-            case "Horizontal":
+            case "Horizontal" -> {
                 for (int i = 0; i < ROW_SIZE; i++) {
-                    board[index][i] = strikeThroughSymbol;
-                }
-            case "Vertical":
-                for (int i = 0; i < COLUMN_SIZE; i++) {
-                    board[i][index] = strikeThroughSymbol;
-                }
-            case "LDiagonal":
-                for (int i = 0; i < ROW_SIZE; i++) {
-                    board[i][i] = strikeThroughSymbol;
-                }
-            case "RDiagonal":
-                for (int i = 0; i < ROW_SIZE; i++) {
-                    board[i][ROW_SIZE-i-1] = strikeThroughSymbol;
+                    board[index][i] = LIGHT_GREEN + strikeThroughSymbol + WHITE;
                 }
             }
+            case "Vertical" -> {
+                for (int i = 0; i < COLUMN_SIZE; i++) {
+                    board[i][index] = LIGHT_GREEN + strikeThroughSymbol + WHITE;
+                }
+            }
+            case "LDiagonal" -> {
+                for (int i = 0; i < ROW_SIZE; i++) {
+                    board[i][i] = LIGHT_GREEN + strikeThroughSymbol + WHITE;
+                }
+            }
+            case "RDiagonal" -> {
+                for (int i = 0; i < ROW_SIZE; i++) {
+                    board[i][ROW_SIZE - i - VALUE_DECREASING] = LIGHT_GREEN + strikeThroughSymbol + WHITE;
+                }
+            }
+        }
         }
     }
 

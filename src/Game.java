@@ -8,29 +8,16 @@ public class Game {
     public static Scanner scanner = new Scanner(System.in);
     public static StringBuilder stringBuilder;
     private static final Pattern pattern = Pattern.compile("^[1-2]{1}");
-
-
-
+    public static void gameloop() throws InterruptedException {
+        newGame();
+        do {
+            startRound();
+        } while (askNextRound());
+    }
     public static void newGame() throws InterruptedException {
         choiseXorO();
         choiseFirstPlayer();
-        startRound();
      }
-    private static void gameLoop() throws InterruptedException {
-        do {
-            startRound();
-        } while (Game.gameIsOver());
-        startNextRound();
-    }
-    public static void test() throws InterruptedException {
-        newGame();
-        for (int i = 0; i < 3; i++) {
-            Player.makeTurn();
-            Board.renderBoard();
-            Bot.makeTurn();
-            Board.renderBoard();
-        }
-    }
     public static void startRound() throws InterruptedException {
         Board.initialize();
         switch (rightOfFirstMove) {
@@ -42,37 +29,44 @@ public class Game {
         startNextRound();
     }
     public static void startNextRound() throws InterruptedException {
-        System.out.println("Начать следующий раунд?\n" +
+        System.out.println("\nНачать следующий раунд?\n" +
                 "1. Да\n" +
                 "2. Нет\n");
-        if (askNextRound()) {
-            startRound();
-        }
+//        if (askNextRound()) {
+//            startRound();
+//        }
     }
     public static void startRoundPlayerThenBot() throws InterruptedException {
-        do {
-            Board.renderBoard();
-
-            Player.makeTurn();
-//            Board.checkBoardState();
-
-
-            Bot.makeTurn();
-            Board.checkBoardState();
-        }
-        while (!gameIsOver());
         Board.renderBoard();
+        do {
+            Board.checkBoardState();
+            if (gameIsNotOver()) {
+                Player.makeTurn();
+                Board.renderBoard();
+            }
+            Board.checkBoardState();
+            if (gameIsNotOver()) {
+                Bot.makeTurn();
+                Board.renderBoard();
+            }
+        }
+        while (gameIsNotOver());
+
     }
     public static void startRoundBotThenPlayer() throws InterruptedException {
         do {
-            Board.renderBoard();
-            Bot.makeTurn();
             Board.checkBoardState();
-            Board.renderBoard();
-            Player.makeTurn();
-            Board.checkBoardState();}
-        while (!gameIsOver());
-
+            if (gameIsNotOver()) {
+                Bot.makeTurn();
+                Board.renderBoard();
+            }
+            Board.checkBoardState();
+            if (gameIsNotOver()) {
+                Player.makeTurn();
+                Board.renderBoard();
+            }
+        }
+        while (gameIsNotOver());
     }
     private static void choiseFirstPlayer() {
         System.out.println("Чьё право на первый ход? \n 1. Player \n 2. Bot \n\n Введите номер игрока:");
@@ -104,8 +98,9 @@ public class Game {
             }
         }
     }
-    private static boolean gameIsOver() {
-        return Board.boardFieldsIsOver() || Board.isRoundIsOver();
+    private static boolean gameIsNotOver() {
+        return !Board.isRoundIsOver();
+//        return Board.boardFieldsIsOver() || Board.isRoundIsOver();
     }
     private static boolean askNextRound() {
         while (true) {
@@ -123,10 +118,5 @@ public class Game {
                 System.out.println("Введите номер вариант");
             }
         }
-    }
-    public static void getStat() {
-        System.out.println(Player.getSideSymbol());
-        System.out.println(Bot.getSideSymbol());
-        System.out.println(rightOfFirstMove);
     }
 }
