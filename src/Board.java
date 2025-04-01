@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 public class Board {
     private static final int COLUMN_SIZE = 3;
     private static final int ROW_SIZE = 3;
+    private static final int SIZE = 3;
     private static final int VALUE_DECREASING = 1;
     private static final String CROSS_SYMBOL = "X⃣"; //"X";
     private static final String ZERO_SYMBOL = "O⃣"; //"O";
@@ -185,5 +187,49 @@ public class Board {
             }
         }
         }
+    // Получение текущего состояния доски
+    public static String[][] getBoard() {
+        return board;
     }
+    public static void clearCell(int[] coordinates) {
+        board[coordinates[0]][coordinates[1]] = EMPTY_SYMBOL;
+    }
+    // Проверка полной доски (ничья)
+    public static boolean isFull() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (Objects.equals(board[i][j], EMPTY_SYMBOL)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    // Проверка победителя
+    public static boolean checkWin(String symbol) {
+        // Проверка строк
+        for (int i = 0; i < SIZE; i++) {
+            if (Objects.equals(board[i][0], symbol) && Objects.equals(board[i][1], symbol) && Objects.equals(board[i][2], symbol)) {
+                return true;
+            }
+        }
+        // Проверка столбцов
+        for (int i = 0; i < SIZE; i++) {
+            if (Objects.equals(board[0][i], symbol) && Objects.equals(board[1][i], symbol) && Objects.equals(board[2][i], symbol)) {
+                return true;
+            }
+        }
+        // Проверка диагоналей
+        if (Objects.equals(board[0][0], symbol) && Objects.equals(board[1][1], symbol) && Objects.equals(board[2][2], symbol)) {
+            return true;
+        }
+        if (Objects.equals(board[0][2], symbol) && Objects.equals(board[1][1], symbol) && Objects.equals(board[2][0], symbol)) {
+            return true;
+        }
+        return false;
+    }
+
+
+
+}
 

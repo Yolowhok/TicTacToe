@@ -46,7 +46,7 @@ public class Game {
             }
             Board.checkBoardState();
             if (gameIsNotOver()) {
-                Bot.makeTurn();
+                BotMinimaxAI.makeTurn();
                 Board.renderBoard();
             }
         }
@@ -57,7 +57,7 @@ public class Game {
         do {
             Board.checkBoardState();
             if (gameIsNotOver()) {
-                Bot.makeTurn();
+                BotMinimaxAI.makeTurn();
                 Board.renderBoard();
             }
             Board.checkBoardState();
@@ -87,11 +87,11 @@ public class Game {
             stringBuilder = new StringBuilder(scanner.next());
             if (Objects.equals(stringBuilder.toString(), String.valueOf(1))) {
                 Player.setSideSymbol(Board.getCrossSymbol());
-                Bot.setSideSymbol(Board.getZeroSymbol());
+                BotMinimaxAI.setSideSymbol(Board.getZeroSymbol());
                 break;
             } else if (Objects.equals(stringBuilder.toString(), String.valueOf(2))) {
                 Player.setSideSymbol(Board.getZeroSymbol());
-                Bot.setSideSymbol(Board.getCrossSymbol());
+                BotMinimaxAI.setSideSymbol(Board.getCrossSymbol());
                 break;
             } else {
                 System.out.println("Введите 1 или 2");
@@ -100,7 +100,6 @@ public class Game {
     }
     private static boolean gameIsNotOver() {
         return !Board.isRoundIsOver();
-//        return Board.boardFieldsIsOver() || Board.isRoundIsOver();
     }
     private static boolean askNextRound() {
         while (true) {

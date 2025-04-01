@@ -2,7 +2,6 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Player {
-    private static final int PLAYER = 1;
     private static final Pattern pattern = Pattern.compile("^[1-3]{1}(\\s)[1-3]{1}");
     private static String sideSymbol;
     public static void makeTurn() {
@@ -26,9 +25,6 @@ public class Player {
 
     public static void setSideSymbol(String string) {
         sideSymbol = string;
-    }
-    public static String getSideSymbol() {
-        return sideSymbol;
     }
     private static int[] stringToIntArray(String value) {
         int [] values = Arrays.stream(value.split(" "))
